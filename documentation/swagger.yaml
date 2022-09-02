@@ -1,0 +1,141 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id User
+        nombre:
+          type: string
+          description: Name user
+        password:
+          type: string
+          description: Password user
+        email:
+          type: string
+          description: Password user
+        role:
+          type: string
+          description: Role user
+      required:
+        - nombre
+        - password
+        - email
+      example:
+        id: string
+        nombre: string
+        password: string
+        email: string
+        role: string
+    UserCreate:
+      type: object
+      properties:
+        nombre:
+          type: string
+          description: Name user
+        password:
+          type: string
+          description: Password user
+        email:
+          type: string
+          description: Password user
+        role:
+          type: string
+          description: Role user
+      required:
+        - nombre
+        - password
+        - email
+      example:
+        nombre: "string"
+        password: "string"
+        email: "string"
+        role: "string"
+    UserUpdate:
+      type: object
+      properties:
+        nombre:
+          type: string
+          description: Name user
+        email:
+          type: string
+          description: Password user
+        role:
+          type: string
+          description: Role user
+      required:
+        - nombre
+        - email
+      example:
+        nombre: "string"
+        email: "string"
+        role: "string"
+paths:
+  /api/users:
+    get:
+      summary: Get all users
+      tags: [User]
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      summary: Create new user
+      tags: [User]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/UserCreate"
+      responses:
+        "201":
+          description: Created
+  /api/users/{id}:
+    put:
+      summary: Update User
+      tags: [User]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/UserUpdate"
+      response:
+        "202":
+          description: Accepted
+        "404":
+          description: Not found
+    delete:
+      summary: Delete User
+      tags: [User]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: User Id
+      response:
+          "200":
+            description: Deleted Success

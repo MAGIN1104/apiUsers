@@ -8,8 +8,10 @@ const {
 } = require("../controllers/usuarios");
 const router = Router();
 
+// GET USER
 router.get("/", getUsers);
 
+// CREATE USERS
 router.post(
   "/",
   [
@@ -20,6 +22,7 @@ router.post(
   postUser
 );
 
+// UPDATE USER
 router.put(
   "/:id",
   [
@@ -30,5 +33,6 @@ router.put(
   putUser
 );
 
+// DELETE USER
 router.delete("/:id", deleteUser);
 module.exports = router;
