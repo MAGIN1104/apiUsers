@@ -1,15 +1,10 @@
 const { response } = require("express");
 const { validationResult } = require("express-validator");
-const Usuario = require("../models/user");
+const Usuario = require("../models/user.model");
 
 // OBTENER LISTA DE USUARIOS
 const getUsers = async (req, res = response) => {
   const usuario = await Usuario.find({}, "nombre email role google");
-  // res.json({
-  //   ok: true,
-  //   message: "Get Users",
-  //   usuario,
-  // });
   res.json(usuario)
 };
 

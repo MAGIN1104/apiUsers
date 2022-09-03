@@ -9,7 +9,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const options = {
   explorer: true,
   definition: {
-    openapi: '3.0.3',
+    openapi: "3.0.3",
     info: {
       title: "API CRUD USERS",
       version: "1.0.0",
@@ -40,9 +40,10 @@ dbConnection();
 app.use(express.json());
 
 // Rutas
-app.use("/", swaggerUI.serve);
-app.get("/",  swaggerUI.setup(specs));
-app.use("/api/users", require("./routes/usuarios"));
+app.use("/", swaggerUI.serve, swaggerUI.setup(specs));
+app.use("/api/users", require("./routes/usuarios.route"));
+app.use("/api/petitions", require("./routes/petition.route"));
+app.use("/api/groups", require("./routes/groups.route"));
 
 app.listen(process.env.PORT, () => {
   console.log("Servidor corriendo en el puero: " + process.env.PORT);
