@@ -27,7 +27,6 @@ const GroupsSchema = Schema({
   },
   image: {
     type: String,
-    require: true,
   },
 });
 
