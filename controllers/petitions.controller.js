@@ -2,12 +2,12 @@ const { response } = require("express");
 const { validationResult } = require("express-validator");
 const Petition = require("../models/petitions.model");
 
-//Get all Petitions
+//Get Petitions by State
 const getPetition = async (req = response, res = response) => {
   const { state } = req.query;
   const petitions = await Petition.find(
     { state: { $eq: state } },
-    "name phone petition state"
+    "id name phone petition state"
   );
   res.json(petitions);
 };

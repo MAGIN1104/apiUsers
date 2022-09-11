@@ -1,6 +1,9 @@
 const { response } = require("express");
+const path = require("path");
+const fs = require("fs");
 const { validationResult } = require("express-validator");
 const Group = require("../models/groups.model");
+const { uploadFile } = require("../helpers/uploadFile.helper");
 
 // GET ALL GROUPS
 const getGroups = async (req = response, res = response) => {
@@ -8,25 +11,39 @@ const getGroups = async (req = response, res = response) => {
     {},
     "groupName sentence bibleQuote meetings link phone image"
   );
-  res.json(groups);
+  let groupsModified = groups.map(({ _doc,_id }) => ({
+    ..._doc,
+    id:_id,
+    image: path.join(__dirname, "../uploads", "groups", _doc.image).replace(/\\/g,'/'),
+  }));
+  res.json(groupsModified);
 };
 
 // Create new Group
 const postGroup = async (req, res) => {
   const errores = validationResult(req);
-  if (!errores.isEmpty()) {
-    return res.status(400).json({
-      statusCode: 400,
-      errors: errores.mapped(),
-    });
-  }
+
   try {
-    const newGroup = new Petition(req.body);
-    await newGroup.save();
+    if (!req.files || Object.keys(req.files).length === 0 || !req.files.image) {
+      res.status(400).json({ message: "No se cargaron archivos" });
+      return;
+    }
+
+    if (!errores.isEmpty()) {
+      return res.status(400).json({
+        statusCode: 400,
+        errors: errores.mapped(),
+      });
+    }
+
+    const group = new Group(req.body);
+    const pathFile = await uploadFile(req.files, "groups");
+    group.image = pathFile;
+    await group.save();
     res.json({
       statusCode: 200,
       message: "Registro Exitoso",
-      newGroup,
+      group,
     });
   } catch (error) {
     console.log(error);
@@ -47,6 +64,17 @@ const deleteGroup = async (req, res = response) => {
         statusCode: 400,
         message: "No se encontraron resultados",
       });
+    }
+    if (groupDB.image) {
+      const pathImg = path.join(
+        __dirname,
+        "../uploads",
+        "groups",
+        groupDB.image
+      );
+      if (fs.existsSync(pathImg)) {
+        fs.unlinkSync(pathImg);
+      }
     }
     await Group.findByIdAndDelete(id);
     res.json({
@@ -72,7 +100,22 @@ const putGroup = async (req, res = response) => {
         message: "No se encontraron resultados",
       });
     }
+
+    if (groupDB.image) {
+      const pathImg = path.join(
+        __dirname,
+        "../uploads",
+        "groups",
+        groupDB.image
+      );
+      if (fs.existsSync(pathImg)) {
+        fs.unlinkSync(pathImg);
+      }
+    }
+
     const campos = req.body;
+    const pathFile = await uploadFile(req.files, "groups");
+    campos.image = pathFile;
 
     // Actualizacion
     const groupUpdated = await Group.findByIdAndUpdate(id, campos, {

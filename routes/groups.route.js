@@ -6,7 +6,7 @@ const {
   putGroup,
   deleteGroup,
 } = require("../controllers/groups.controller");
-const router = require("./petition.route");
+const router = Router();
 
 // GET GROUPS
 router.get("/", getGroups);
@@ -20,7 +20,6 @@ router.post(
     check("bibleQuote", "La versiculo es obligatorio").not().isEmpty(),
     check("meetings", "El campo meetings es obligatorio").not().isEmpty(),
     check("sentence", "La cita es obligatoria").not().isEmpty(),
-    check("image", "La imagen es obligatoria").not().isEmpty(),
   ],
   postGroup
 );
@@ -29,6 +28,7 @@ router.post(
 router.put(
   "/:id",
   [
+    check("id", "Id inválido").isMongoId(),
     check("groupName", "El nombre es obligatorio").not().isEmpty(),
     check("sentence", "La cita es obligatoria").not().isEmpty(),
     check("bibleQuote", "La versiculo es obligatorio").not().isEmpty(),
