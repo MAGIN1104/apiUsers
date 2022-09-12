@@ -11,11 +11,14 @@ const getGroups = async (req = response, res = response) => {
     {},
     "groupName sentence bibleQuote meetings link phone image"
   );
-  let groupsModified = groups.map(({ _doc,_id }) => ({
-    ..._doc,
-    id:_id,
-    image: path.join(__dirname, "../uploads", "groups", _doc.image).replace(/\\/g,'/'),
-  }));
+  let groupsModified = groups.map(function ({ _doc, _id }) {
+    delete _doc._id;
+    return {
+      ..._doc,
+      id: _id,
+      image: path.join(__dirname, "../uploads", "groups", _doc.image),
+    };
+  });
   res.json(groupsModified);
 };
 
